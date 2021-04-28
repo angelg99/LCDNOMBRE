@@ -1,0 +1,493 @@
+MPASM 5.87                     LCDNOMBRE.ASM   4-12-2021  17:29:01         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00001 #include "p16F628a.inc"    
+                      00001         LIST
+                      00002 
+                      00003 ;==========================================================================
+                      00004 ; Build date : Jan 06 2020
+                      00005 ;  MPASM PIC16F628A processor include
+                      00006 ; 
+                      00007 ;  (c) Copyright 1999-2020 Microchip Technology, All rights reserved
+                      00008 ;==========================================================================
+                      00009 
+                      00386         LIST
+2007   3F39           00002  __CONFIG _FOSC_INTOSCCLK & _WDTE_OFF & _PWRTE_OFF & _MCLRE_ON & _BOREN_OFF & _LVP_OFF & _CPD_OFF & _CP_
+                            OFF    
+                      00003 
+                      00004 RES_VECT  CODE    0x0000            ; processor reset vector
+                      00005     
+0000   1005           00006     BCF PORTA,0         ;reset
+0001   3001           00007     MOVLW 0x01
+0002   0086           00008     MOVWF PORTB
+                      00009     
+0003   1485           00010     BSF PORTA,1         ;exec
+0004   2???           00011     CALL time
+0005   1085           00012     BCF PORTA,1
+0006   2???           00013     CALL time
+                      00014   
+0007   2???           00015     GOTO    START                   ; go to beginning of program
+                      00016 ; TODO ADD INTERRUPTS HERE IF USED
+                      00017 MAIN_PROG CODE                      ; let linker place main program
+                      00018 
+  00000020            00019 i EQU 0x20
+  00000021            00020 j EQU 0x21
+                      00021 
+0000                  00022 START
+0000   3007           00023     MOVLW 0x07
+0001   009F           00024     MOVWF CMCON
+0002   1303           00025     BCF STATUS, RP1
+0003   1683           00026     BSF STATUS, RP0 
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0004   0186           00027     CLRF TRISB
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0005   0185           00028     CLRF TRISA
+0006   1283           00029     BCF STATUS, RP0
+                      00030     
+0007   1085           00031     BCF PORTA,1
+0008   1005           00032     BCF PORTA,0
+                      00033     
+0009                  00034 INITLCD
+0009   1005           00035     BCF PORTA,0         ;reset
+000A   3001           00036     MOVLW 0x01
+000B   0086           00037     MOVWF PORTB
+                      00038     
+000C   1485           00039     BSF PORTA,1         ;exec
+000D   2???           00040     CALL time
+MPASM 5.87                     LCDNOMBRE.ASM   4-12-2021  17:29:01         PAGE  2
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+000E   1085           00041     BCF PORTA,1
+000F   2???           00042     CALL time
+                      00043     
+0010   300C           00044     MOVLW 0x0C          ;first line
+0011   0086           00045     MOVWF PORTB
+                      00046     
+0012   1485           00047     BSF PORTA,1         ;exec
+0013   2???           00048     CALL time
+0014   1085           00049     BCF PORTA,1
+0015   2???           00050     CALL time
+                      00051          
+0016   303C           00052     MOVLW 0x3C          ;cursor mode
+0017   0086           00053     MOVWF PORTB
+                      00054     
+0018   1485           00055     BSF PORTA,1         ;exec
+0019   2???           00056     CALL time
+001A   1085           00057     BCF PORTA,1
+001B   2???           00058     CALL time
+                      00059         
+001C                  00060 INICIO    
+                      00061    
+001C   1005           00062     BCF PORTA,0         ;command mode
+001D   2???           00063     CALL time
+                      00064     
+001E   3082           00065     MOVLW 0x82          ;LCD position
+001F   0086           00066     MOVWF PORTB
+0020   2???           00067     CALL exec
+                      00068     
+0021   1405           00069     BSF PORTA,0         ;data mode
+0022   2???           00070     CALL time
+                      00071     
+0023   3041           00072     MOVLW 'A'           ;message1
+0024   0086           00073     MOVWF PORTB
+0025   2???           00074     CALL exec
+0026   304E           00075     MOVLW 'N'
+0027   0086           00076     MOVWF PORTB
+0028   2???           00077     CALL exec
+0029   3047           00078     MOVLW 'G'
+002A   0086           00079     MOVWF PORTB
+002B   2???           00080     CALL exec
+002C   3045           00081     MOVLW 'E'
+002D   0086           00082     MOVWF PORTB
+002E   2???           00083     CALL exec
+002F   304C           00084     MOVLW 'L'
+0030   0086           00085     MOVWF PORTB
+0031   2???           00086     CALL exec
+0032   3020           00087     MOVLW ' '
+0033   0086           00088     MOVWF PORTB
+0034   2???           00089     CALL exec
+0035   3047           00090     MOVLW 'G'
+0036   0086           00091     MOVWF PORTB
+0037   2???           00092     CALL exec
+0038   304F           00093     MOVLW 'O'
+MPASM 5.87                     LCDNOMBRE.ASM   4-12-2021  17:29:01         PAGE  3
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0039   0086           00094     MOVWF PORTB
+003A   2???           00095     CALL exec
+003B   304E           00096     MOVLW 'N'
+003C   0086           00097     MOVWF PORTB
+003D   2???           00098     CALL exec
+003E   305A           00099     MOVLW 'Z'
+003F   0086           00100     MOVWF PORTB
+0040   2???           00101     CALL exec
+0041   3041           00102     MOVLW 'A'
+0042   0086           00103     MOVWF PORTB
+0043   2???           00104     CALL exec
+0044   304C           00105     MOVLW 'L'
+0045   0086           00106     MOVWF PORTB
+0046   2???           00107     CALL exec
+0047   304F           00108     MOVLW 'O'
+0048   0086           00109     MOVWF PORTB
+0049   2???           00110     CALL exec
+                      00111    
+004A   1005           00112     BCF PORTA,0         ;command mode
+004B   2???           00113     CALL time
+                      00114     
+004C   30C0           00115     MOVLW 0xC0          ;LCD position 
+004D   0086           00116     MOVWF PORTB
+004E   2???           00117     CALL exec
+004F   1405           00118     BSF PORTA,0         ;data mode
+0050   2???           00119     CALL time
+0051   3044           00120     MOVLW 'D'
+0052   0086           00121     MOVWF PORTB
+0053   2???           00122     CALL exec
+0054   3045           00123     MOVLW 'E'
+0055   0086           00124     MOVWF PORTB
+0056   2???           00125     CALL exec
+0057   304C           00126     MOVLW 'L'
+0058   0086           00127     MOVWF PORTB
+0059   2???           00128     CALL exec
+005A   3041           00129     MOVLW 'A'
+005B   0086           00130     MOVWF PORTB
+005C   2???           00131     CALL exec
+005D   3020           00132     MOVLW ' '
+005E   0086           00133     MOVWF PORTB
+005F   2???           00134     CALL exec
+0060   3043           00135     MOVLW 'C'
+0061   0086           00136     MOVWF PORTB
+0062   2???           00137     CALL exec
+0063   3052           00138     MOVLW 'R'
+0064   0086           00139     MOVWF PORTB
+0065   2???           00140     CALL exec
+0066   3055           00141     MOVLW 'U'
+0067   0086           00142     MOVWF PORTB
+0068   2???           00143     CALL exec
+0069   305A           00144     MOVLW 'Z'
+006A   0086           00145     MOVWF PORTB
+006B   2???           00146     CALL exec
+MPASM 5.87                     LCDNOMBRE.ASM   4-12-2021  17:29:01         PAGE  4
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+006C   3020           00147     MOVLW ' '
+006D   0086           00148     MOVWF PORTB
+006E   2???           00149     CALL exec
+006F   3043           00150     MOVLW 'C'
+0070   0086           00151     MOVWF PORTB
+0071   2???           00152     CALL exec
+0072   3041           00153     MOVLW 'A'
+0073   0086           00154     MOVWF PORTB
+0074   2???           00155     CALL exec
+0075   3053           00156     MOVLW 'S'
+0076   0086           00157     MOVWF PORTB
+0077   2???           00158     CALL exec
+0078   3054           00159     MOVLW 'T'
+0079   0086           00160     MOVWF PORTB
+007A   2???           00161     CALL exec
+007B   3052           00162     MOVLW 'R'
+007C   0086           00163     MOVWF PORTB
+007D   2???           00164     CALL exec
+007E   304F           00165     MOVLW 'O'
+007F   0086           00166     MOVWF PORTB
+0080   2???           00167     CALL exec
+0081   2???           00168     GOTO INICIO
+                      00169 
+0082                  00170 exec
+                      00171 
+0082   1485           00172     BSF PORTA,1         ;exec
+0083   2???           00173     CALL time
+0084   1085           00174     BCF PORTA,1
+0085   2???           00175     CALL time
+0086   0008           00176     RETURN
+                      00177     
+0087                  00178 time
+0087   01A0           00179     CLRF i
+0088   300A           00180     MOVLW d'10'
+0089   00A1           00181     MOVWF j
+008A                  00182 ciclo    
+008A   3050           00183     MOVLW d'80'
+008B   00A0           00184     MOVWF i
+Message[305]: Using default destination of 1 (file).
+008C   0BA0           00185     DECFSZ i
+008D   2???           00186     GOTO $-1
+Message[305]: Using default destination of 1 (file).
+008E   0BA1           00187     DECFSZ j
+008F   2???           00188     GOTO ciclo
+0090   0008           00189     RETURN
+                      00190                         
+                      00191                         
+3F39                  00192     END
+MPASM 5.87                     LCDNOMBRE.ASM   4-12-2021  17:29:01         PAGE  5
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+ADDEN                             00000003
+ADEN                              00000003
+BRGH                              00000002
+C                                 00000000
+C1INV                             00000004
+C1OUT                             00000006
+C2INV                             00000005
+C2OUT                             00000007
+CCP1CON                           00000017
+CCP1IE                            00000002
+CCP1IF                            00000002
+CCP1M0                            00000000
+CCP1M1                            00000001
+CCP1M2                            00000002
+CCP1M3                            00000003
+CCP1X                             00000005
+CCP1Y                             00000004
+CCPR1                             00000015
+CCPR1H                            00000016
+CCPR1L                            00000015
+CIS                               00000003
+CM0                               00000000
+CM1                               00000001
+CM2                               00000002
+CMCON                             0000001F
+CMIE                              00000006
+CMIF                              00000006
+CREN                              00000004
+CSRC                              00000007
+DATA_CP_OFF                       00003FFF
+DATA_CP_ON                        00003EFF
+DC                                00000001
+EEADR                             0000009B
+EECON1                            0000009C
+EECON2                            0000009D
+EEDATA                            0000009A
+EEIE                              00000007
+EEIF                              00000007
+F                                 00000001
+FERR                              00000002
+FSR                               00000004
+GIE                               00000007
+INDF                              00000000
+INICIO                            0000001C
+INITLCD                           00000009
+INTCON                            0000000B
+INTE                              00000004
+INTEDG                            00000006
+INTF                              00000001
+IRP                               00000007
+NOT_BO                            00000000
+NOT_BOD                           00000000
+NOT_BOR                           00000000
+MPASM 5.87                     LCDNOMBRE.ASM   4-12-2021  17:29:01         PAGE  6
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+NOT_PD                            00000003
+NOT_POR                           00000001
+NOT_RBPU                          00000007
+NOT_T1SYNC                        00000002
+NOT_TO                            00000004
+OERR                              00000001
+OPTION_REG                        00000081
+OSCF                              00000003
+PCL                               00000002
+PCLATH                            0000000A
+PCON                              0000008E
+PEIE                              00000006
+PIE1                              0000008C
+PIR1                              0000000C
+PORTA                             00000005
+PORTB                             00000006
+PR2                               00000092
+PS0                               00000000
+PS1                               00000001
+PS2                               00000002
+PSA                               00000003
+RA0                               00000000
+RA1                               00000001
+RA2                               00000002
+RA3                               00000003
+RA4                               00000004
+RA5                               00000005
+RA6                               00000006
+RA7                               00000007
+RB0                               00000000
+RB1                               00000001
+RB2                               00000002
+RB3                               00000003
+RB4                               00000004
+RB5                               00000005
+RB6                               00000006
+RB7                               00000007
+RBIE                              00000003
+RBIF                              00000000
+RCIE                              00000005
+RCIF                              00000005
+RCREG                             0000001A
+RCSTA                             00000018
+RD                                00000000
+RP0                               00000005
+RP1                               00000006
+RX9                               00000006
+RX9D                              00000000
+SPBRG                             00000099
+SPEN                              00000007
+SREN                              00000005
+START                             00000000
+STATUS                            00000003
+MPASM 5.87                     LCDNOMBRE.ASM   4-12-2021  17:29:01         PAGE  7
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+SYNC                              00000004
+T0CS                              00000005
+T0IE                              00000005
+T0IF                              00000002
+T0SE                              00000004
+T1CKPS0                           00000004
+T1CKPS1                           00000005
+T1CON                             00000010
+T1OSCEN                           00000003
+T2CKPS0                           00000000
+T2CKPS1                           00000001
+T2CON                             00000012
+TMR0                              00000001
+TMR0IE                            00000005
+TMR0IF                            00000002
+TMR1                              0000000E
+TMR1CS                            00000001
+TMR1H                             0000000F
+TMR1IE                            00000000
+TMR1IF                            00000000
+TMR1L                             0000000E
+TMR1ON                            00000000
+TMR2                              00000011
+TMR2IE                            00000001
+TMR2IF                            00000001
+TMR2ON                            00000002
+TOUTPS0                           00000003
+TOUTPS1                           00000004
+TOUTPS2                           00000005
+TOUTPS3                           00000006
+TRISA                             00000085
+TRISA0                            00000000
+TRISA1                            00000001
+TRISA2                            00000002
+TRISA3                            00000003
+TRISA4                            00000004
+TRISA5                            00000005
+TRISA6                            00000006
+TRISA7                            00000007
+TRISB                             00000086
+TRISB0                            00000000
+TRISB1                            00000001
+TRISB2                            00000002
+TRISB3                            00000003
+TRISB4                            00000004
+TRISB5                            00000005
+TRISB6                            00000006
+TRISB7                            00000007
+TRMT                              00000001
+TX9                               00000006
+TX9D                              00000000
+TXEN                              00000005
+TXIE                              00000004
+MPASM 5.87                     LCDNOMBRE.ASM   4-12-2021  17:29:01         PAGE  8
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+TXIF                              00000004
+TXREG                             00000019
+TXSTA                             00000098
+VR0                               00000000
+VR1                               00000001
+VR2                               00000002
+VR3                               00000003
+VRCON                             0000009F
+VREN                              00000007
+VROE                              00000006
+VRR                               00000005
+W                                 00000000
+WR                                00000001
+WREN                              00000002
+WRERR                             00000003
+Z                                 00000002
+_BODEN_OFF                        00003FBF
+_BODEN_ON                         00003FFF
+_BOREN_OFF                        00003FBF
+_BOREN_ON                         00003FFF
+_CONFIG                           00002007
+_CPD_OFF                          00003FFF
+_CPD_ON                           00003EFF
+_CP_OFF                           00003FFF
+_CP_ON                            00001FFF
+_DEVID1                           00002006
+_ER_OSC_CLKOUT                    00003FFF
+_ER_OSC_NOCLKOUT                  00003FFE
+_EXTCLK_OSC                       00003FEF
+_FOSC_ECIO                        00003FEF
+_FOSC_EXTRCCLK                    00003FFF
+_FOSC_EXTRCIO                     00003FFE
+_FOSC_HS                          00003FEE
+_FOSC_INTOSCCLK                   00003FFD
+_FOSC_INTOSCIO                    00003FFC
+_FOSC_LP                          00003FEC
+_FOSC_XT                          00003FED
+_HS_OSC                           00003FEE
+_IDLOC0                           00002000
+_IDLOC1                           00002001
+_IDLOC2                           00002002
+_IDLOC3                           00002003
+_INTOSC_OSC_CLKOUT                00003FFD
+_INTOSC_OSC_NOCLKOUT              00003FFC
+_INTRC_OSC_CLKOUT                 00003FFD
+_INTRC_OSC_NOCLKOUT               00003FFC
+_LP_OSC                           00003FEC
+_LVP_OFF                          00003F7F
+_LVP_ON                           00003FFF
+_MAIN_PROG_008D                   0000008D
+_MCLRE_OFF                        00003FDF
+_MCLRE_ON                         00003FFF
+_PWRTE_OFF                        00003FFF
+MPASM 5.87                     LCDNOMBRE.ASM   4-12-2021  17:29:01         PAGE  9
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+_PWRTE_ON                         00003FF7
+_RC_OSC_CLKOUT                    00003FFF
+_RC_OSC_NOCLKOUT                  00003FFE
+_WDTE_OFF                         00003FFB
+_WDTE_ON                          00003FFF
+_WDT_OFF                          00003FFB
+_WDT_ON                           00003FFF
+_XT_OSC                           00003FED
+__16F628A                         00000001
+ciclo                             0000008A
+exec                              00000082
+i                                 00000020
+j                                 00000021
+time                              00000087
+
+Errors   :     0
+Warnings :     0 reported,     0 suppressed
+Messages :     4 reported,     0 suppressed
+
+
